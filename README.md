@@ -1,5 +1,4 @@
 # `diffant`
-
 `diffant` uses the structure of configuration files to do a more helpful comparison than standard diff.
 
 `diffant` allows you to compare:
@@ -7,8 +6,6 @@
 * ini
 * json
 * yaml
-
-
 
 For example, for the purpose of comparing configuration, these two files are the same. There should be no diff:
 
@@ -23,7 +20,7 @@ For example, for the purpose of comparing configuration, these two files are the
 You are not limited to comparing 2 files, `diffant` can compare many files.
 
 ## SAMPLE OUTPUT
-```code
+```
 fruit:  apple
           tests/sample_input.dirs/simple/file01.json
           tests/sample_input.dirs/simple/file03.json
@@ -124,20 +121,25 @@ vegetable:  spinach
 
 ## LICENSE
 GNU General Public License v3.0
+
 ## SETUP
-    `pip3 install diffant`
+```
+pip3 install diffant
+```
 
 ## USAGE
-
 ```
 diffant  <directory with files of same type>
 ```
 
 ## BUGS
-
 1. The files you are comparing need to be  at the top level of a directory that you supply as a positional argument to `diffant`
-1. The files need to have an extension that reflects their contents (ini,json.yaml)
+1. The files need to have an extension that reflects their contents (ini,json.yml)
 1. You can't compare files of different types or have files of different types in your input directory.
 
 ##  SUPPORT
-    email dan@omacneil.org
+dan@omacneil.org
+
+## CONTRIBUTORS
+* @morgan: Helpful tweak to README.md
+* [cpat-gpt](https://chat.openai.com/): about 50% of the code

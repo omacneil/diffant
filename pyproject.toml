@@ -5,6 +5,8 @@ description = "tool to compare structured files like json, ini , yaml"
 authors = ["omacneil <dan@omacneil.org>"]
 license = "GNU General Public License v3.0"
 readme  = "README.md"
+homepage = "https://github.com/omacneil/diffant"
+repository = "https://github.com/omacneil/diffant"
 
 [tool.poetry.dependencies]
 python = "^3.8.1"

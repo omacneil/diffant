@@ -1,0 +1,10 @@
+---
+ doe: "a deer, a female deer"
+ ray: "a kind of fish"
+ pi: 3.14
+ xmas: true
+ french-hens: 3
+ calling-birds:
+   - dewey
+   - louie
+   - fred

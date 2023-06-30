@@ -82,7 +82,7 @@ There is no significance to version numbers, potentially breaking changes are no
 1. git commit -m 'prepare release 1.0.2'
 1. `git tag -a 1.0.2`
 1. `git push`
-1. `git push origin 1.0.2`
+1. `git push origin 1.0.2 -m 'see CHANGELOG.md'`
 1. `poetry build`
 1. Test install:
 1. `pip uninstall diffant`

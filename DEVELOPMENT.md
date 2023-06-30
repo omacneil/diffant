@@ -72,7 +72,7 @@ There is no significance to version numbers, potentially breaking changes are no
 * Commit to main (if have rights) for doc changes
 * Update CHANGELOG.md [Unreleased] as needed.
 
-## MERGE 
+## MERGE
 * Update CHANGELOG.md [Unreleased] as needed.
 
 ## RELEASING
@@ -80,21 +80,20 @@ There is no significance to version numbers, potentially breaking changes are no
 1. Move changes from CHANGELOG.md [Unreleased] to [version] section
 1. git add pyproject.toml CHANGELOG.md
 1. git commit -m 'prepare release 1.0.2'
-1. `git tag -a '1.0.2'`
+1. `git tag -a 1.0.2`
 1. `git push`
 1. `git push origin 1.0.2`
 1. `poetry build`
 1. Test install:
-```pip uninstall diffant`
-pip install dist/<name of wheel>
-```
+1. `pip uninstall diffant`
+1. `pip install dist/<name of wheel>`
 1. get API token from [pypi.org](https://pypi.org)
-   - account settings
-   - scroll to 'Add API token'
-   - set token name: to 'diffant-<new version>' (example diffant-1.02)
-   - set scope to 'project: diffant'
-   - add token
-   - copy token
+  - account settings
+  - scroll to 'Add API token'
+  - set token name: to 'diffant-<new version>' (example diffant-1.02)
+  - set scope to 'project: diffant'
+  - add token
+  - copy token
 1. Tell poetry what the API token is:`poetry config pypi-token.pypi <token text>`T
 1. Publish package: `poetry publish`
-1. Remove the token (click remove token button in pypi.org web page) 
+1. Remove the token (click remove token button in pypi.org web page)

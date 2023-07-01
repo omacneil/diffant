@@ -55,7 +55,8 @@ def get_input_dir() -> str:
         NotADirectoryError: If the supplied path is not a directory.
         SystemExit (via argparse): If the required argument is not provided.
     """
-    parser = argparse.ArgumentParser(description="JSON file comparison tool.")
+    msg = "json, yaml, ini file comparison tool."
+    parser = argparse.ArgumentParser(description=msg)
     parser.add_argument(
         "input_dir",
         type=str,

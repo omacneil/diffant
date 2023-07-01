@@ -7,7 +7,8 @@ and this project does **NOT** adhere to Semantic Versioning
 
 ## [Unreleased]
 ### Added
-
+- Typo fixes to development docs
+- Improved diffant --help
 ## Fixed
 
 ### Removed

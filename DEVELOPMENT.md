@@ -55,6 +55,7 @@ To extend `diffant` to handle new file types:
 1. sub class ABCDiff (copy and modify diffant/jsondiff.py )
 1. in YourNewDiff sub class, override the abstract method parse_file() with code to parse a new file type into a python dictionary
 1. add a file type and class name mapping to diffant/main.py:DIFF_MAPPING
+1. update: `parser = argparse.ArgumentParser(` in  diffant/main.py
 1. add an `import <libaries you need>` to yournewdiff.py
 1. add tests to get 100% coverage
 1. get a clean `tox -qe lint ` run

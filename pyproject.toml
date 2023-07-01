@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "diffant"
-version = "1.0.2"
+version = "1.0.3"
 description = "tool to compare structured files like json, ini , yaml"
 authors = ["omacneil <dan@omacneil.org>"]
 license = "GPL-3.0-or-later"

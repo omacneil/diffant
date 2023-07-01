@@ -13,12 +13,14 @@ from diffant import exceptions
 from diffant.diffabc import DiffABC
 from diffant.diffini import DiffIni
 from diffant.diffjson import DiffJson
+from diffant.diffxml import DiffXML
 from diffant.diffyml import DiffYML
 
 # map file types: 'ini' to class to process that type: IniDiff
 DIFF_MAPPING: Dict[str, Type[DiffABC]] = {
     "ini": DiffIni,
     "json": DiffJson,
+    "xml": DiffXML,
     "yml": DiffYML,
 }
 
@@ -55,7 +57,7 @@ def get_input_dir() -> str:
         NotADirectoryError: If the supplied path is not a directory.
         SystemExit (via argparse): If the required argument is not provided.
     """
-    msg = "json, yaml, ini file comparison tool."
+    msg = "json, xml, yaml, ini file comparison tool."
     parser = argparse.ArgumentParser(description=msg)
     parser.add_argument(
         "input_dir",
@@ -121,7 +123,7 @@ def get_config_files_type(input_dir: str) -> str:
 
 
 def create_differ(mapping: Dict[str, Type[DiffABC]], file_type: str) -> DiffABC:
-    """ Return the Diff class we want to instanciate.
+    """Return the Diff class we want to instanciate.
 
     Args:
         mapping (Dict): map file type strings to Diff* classes

@@ -717,6 +717,17 @@ files = [
 ]
 
 [[package]]
+name = "types-xmltodict"
+version = "0.13.0.2"
+description = "Typing stubs for xmltodict"
+optional = false
+python-versions = "*"
+files = [
+    {file = "types-xmltodict-0.13.0.2.tar.gz", hash = "sha256:7a233e65aa828aac611250aa479f9e346a41a8029566ed90dac246c5888304df"},
+    {file = "types_xmltodict-0.13.0.2-py3-none-any.whl", hash = "sha256:274eb87050e957be0328eace3371714468578f6fbe66341702741366c65f256a"},
+]
+
+[[package]]
 name = "typing-extensions"
 version = "4.6.3"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -831,7 +842,18 @@ files = [
     {file = "wrapt-1.15.0.tar.gz", hash = "sha256:d06730c6aed78cee4126234cf2d071e01b44b915e725a6cb439a879ec9754a3a"},
 ]
 
+[[package]]
+name = "xmltodict"
+version = "0.13.0"
+description = "Makes working with XML feel like you are working with JSON"
+optional = false
+python-versions = ">=3.4"
+files = [
+    {file = "xmltodict-0.13.0-py2.py3-none-any.whl", hash = "sha256:aa89e8fd76320154a40d19a0df04a4695fb9dc5ba977cbb68ab3e4eb225e7852"},
+    {file = "xmltodict-0.13.0.tar.gz", hash = "sha256:341595a488e3e01a85a9d8911d8912fd922ede5fecc4dce437eb4b6c8d037e56"},
+]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "01e10d27b6ac95c53a5be5758dda475c0f338e88a5cbd654ad4fc578874d5713"
+content-hash = "66c796ae477f2ed01fa5f83860d8b2334b5e829024f73a34ef633674403b5744"

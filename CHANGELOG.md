@@ -7,11 +7,15 @@ and this project does **NOT** adhere to Semantic Versioning
 
 ## [Unreleased]
 ### Added
-- Typo fixes to development docs
-- Improved diffant --help
 ## Fixed
-
 ### Removed
+
+## [1.0.3]
+### Added
+- Improved diffant --help
+- Support for parsing xml files
+## Fixed
+- Typos in development doc
 
 ## [1.0.2]
 ### Added

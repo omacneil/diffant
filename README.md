@@ -6,6 +6,7 @@
 * ini
 * json
 * yaml
+* xml
 
 For example, for the purpose of comparing configuration, these two files are the same. There should be no diff:
 

@@ -49,22 +49,6 @@ poetry shell
 tox -qe lint
 ```
 
-## EXTENDING DIFFANT
-To extend `diffant` to handle new file types:
-
-1. sub class ABCDiff (copy and modify diffant/jsondiff.py )
-1. in YourNewDiff sub class, override the abstract method parse_file() with code to parse a new file type into a python dictionary
-1. add a file type and class name mapping to diffant/main.py:DIFF_MAPPING
-1. update: `parser = argparse.ArgumentParser(` in  diffant/main.py
-1. add an `import <libaries you need>` to yournewdiff.py
-1. add tests to get 100% coverage
-1. get a clean `tox -qe lint ` run
-1. get 100% test coverage from `coverage run -m pytest ; coverage report`
-1. get a clean `tox` run to show things work in all supported python3s
-1. [submit a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/creating-a-pull-request?tool=cli) , you will probably have to fork the repository.
-
-If there is an existing library for parsing a file to a python dict, you can  get create most of the new class and associated tests by pasting diffant/diffjson.py and tests/diffyml/test_yml_parse_file.py into chat-gpt chats and ask it to create the class and tests for <your new file type> using the supplied as templates.
-
 ## VERSIONS
 There is no significance to version numbers, potentially breaking changes are noted in CHANGLELOG.md
 

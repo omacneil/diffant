@@ -1,144 +1,125 @@
-"""
-Contents:
-    the main() entry point for the diffant script
-    with associated functions and constants
-"""
-import argparse
-import os
-import sys
-from pathlib import Path
-from typing import Dict, Type
+"""Command line interface for diffant."""
+from enum import Enum
+from typing import TYPE_CHECKING, Iterable, List, Protocol, Set
 
-from diffant import exceptions
-from diffant.diffabc import DiffABC
-from diffant.diffini import DiffIni
-from diffant.diffjson import DiffJson
-from diffant.diffxml import DiffXML
-from diffant.diffyml import DiffYML
+if TYPE_CHECKING:
+    from diffant.differ.types import ConfigData, DiffSummary
 
-# map file types: 'ini' to class to process that type: IniDiff
-DIFF_MAPPING: Dict[str, Type[DiffABC]] = {
-    "ini": DiffIni,
-    "json": DiffJson,
-    "xml": DiffXML,
-    "yml": DiffYML,
-}
+import typer
+
+app = typer.Typer()
 
 
-def main() -> bool:
-    """main as is tradition
-
-    Returns:
-        bool: mainly for unit testing _
-    """
-    try:
-        input_dir = get_input_dir()
-        files_type = get_config_files_type(input_dir)
-        differ = create_differ(mapping=DIFF_MAPPING, file_type=files_type)
-    except exceptions.FatalButExpectedError as exc:
-        msg = f"FATAL: {type(exc).__name__}: {str(exc)}"
-        print(msg, file=sys.stderr)
-        sys.exit(os.EX_DATAERR)
-
-    differ.calc(config_dir=input_dir, files_type=files_type)
-    print(differ.report)
-    return True
+class ReportTypeEnum(str, Enum):
+    """Report type."""
+    raw = "raw"
 
 
-def get_input_dir() -> str:
-    """Retrieve and validate input of directory with  config files
-       from command-line arguments using argparse.
+class PathLike(Protocol):
+    """Protocol for a path-like object."""
 
-    Returns:
-        str: The input directory.
+    @property
+    def name(self) -> str:
+        """Get the name of the file."""
+        ...
 
-    Raises:
-        FileNotFoundError: If the supplied directory does not exist.
-        NotADirectoryError: If the supplied path is not a directory.
-        SystemExit (via argparse): If the required argument is not provided.
-    """
-    msg = "json, xml, yaml, ini file comparison tool."
-    parser = argparse.ArgumentParser(description=msg)
-    parser.add_argument(
-        "input_dir",
-        type=str,
-        help="Path to dir containing config files of the same type.",
+    @property
+    def suffix(self) -> str:
+        """Get the suffix of the file."""
+        ...
+
+    def glob(self, pattern) -> Iterable["PathLike"]:
+        """Get the file paths matching the given pattern."""
+        ...
+
+
+
+@app.command()
+def main(
+    input_dir: str = typer.Argument(
+        ...,
+        help="Directory with configuration files to diff",
+    ),
+    input_patterns: List[str] = typer.Option(
+        None,
+        "--input-pattern",
+        "-p",
+        help="Glob pattern to match files in input dir",
+    ),
+    is_cloud_path: bool = typer.Option(
+        False,
+        "--is-cloud-path",
+        "-c",
+        help=("If the input dir is a cloud path, " "e.g. gs://my-bucket/my-dir"),
+    ),
+    report_type: ReportTypeEnum = typer.Option(
+        ReportTypeEnum.raw, "--report-type", "-r", help="Type of report to generate."
+    ),
+) -> None:
+    """Diff configuration files in a directory"""
+    file_paths = get_file_paths(
+        input_dir=input_dir,
+        input_patterns=input_patterns or ["*"],
+        is_cloud_path=is_cloud_path,
     )
-
-    args = parser.parse_args()
-    input_dir = str(args.input_dir)
-
-    if not os.path.exists(input_dir):
-        raise FileNotFoundError(f"The directory '{input_dir}' does not exist")
-
-    if not os.path.isdir(input_dir):
-        raise NotADirectoryError(f"'{input_dir}' is not a directory")
-
-    return input_dir
+    config_data = get_config_data(file_paths, is_cloud_path)
+    diff_summary = get_diff_summary(config_data)
+    generate_report(diff_summary, report_type)
 
 
-def get_config_files_type(input_dir: str) -> str:
-    """Return extension of the files in the directory
+def get_file_paths(
+    input_dir: str, input_patterns: List[str], is_cloud_path: bool
+) -> Set[PathLike]:
+    """Get the file paths at a given input_dir."""
+    input_dir_path: PathLike
 
-    Args:
-        input_dir (str): dir with configuration files we want the extension of
+    if is_cloud_path:
+        from cloudpathlib import CloudPath
 
-    Raises:
-        exceptions.InputDirContentsError:
-        raise this If there are sub directories, files without
-        extensions or more than 1 type of file
+        input_dir_path = CloudPath(input_dir) # type: ignore [abstract]
+    else:
+        from pathlib import Path
 
-    Returns:
-        str: examples: 'json', 'yml', 'ini'
-    """
-    path = Path(input_dir)
+        input_dir_path = Path(input_dir)
 
-    file_extensions = set()
-    subdirs = []
-    no_ext_files = []
+    file_paths: Set[PathLike] = set()
+    for input_pattern in input_patterns:
+        for path in input_dir_path.glob(input_pattern):
+            file_paths.add(path)
 
-    for item in path.glob("*"):
-        if item.is_dir():
-            subdirs.append(item)
-        elif item.suffix == "":
-            no_ext_files.append(item)
-        else:
-            file_extensions.add(item.suffix)
-
-    errors = []
-    if subdirs:
-        errors.append(f"Sub-directories not allowed in input dir: {input_dir}")
-    if no_ext_files:
-        errors.append(f"Files without extensions not allowed in input dir: {input_dir}")
-    if len(file_extensions) > 1:
-        msg = f"Expected 1 file extension in {input_dir} found {list(file_extensions)}"
-        errors.append(msg)
-
-    if errors:
-        raise exceptions.InputDirContentsError("\n".join(errors))
-
-    extension = next(iter(file_extensions))  # Get the first and only item from the set
-
-    return str(extension[1:])  # remove the leading dot from the extension
+    return file_paths
 
 
-def create_differ(mapping: Dict[str, Type[DiffABC]], file_type: str) -> DiffABC:
-    """Return the Diff class we want to instanciate.
+def get_config_data(file_paths: Set[PathLike], is_cloud_path: bool) -> List["ConfigData"]:
+    """Get the file contents at a given file path."""
+    from diffant.deserializer import deserialize
+    from diffant.differ.types import ConfigData
+    from diffant.reader import read_file
 
-    Args:
-        mapping (Dict): map file type strings to Diff* classes
-        file_type (str): extension / file type examples: 'json', 'ini'
+    return [
+        ConfigData(
+            filename=file_path.name,
+            data=deserialize(
+                file_contents=read_file(str(file_path), is_cloud_path), suffix=file_path.suffix
+            ),
+        )
+        for file_path in file_paths
+    ]
 
-    Raises:
-        exceptions.InputDirContentsError:
-            if we dont have sub class that can parse the presented file type
 
-    Returns:
-        DiffABC: A sub class of DiffABC that can parse files of type: file_type
-    """
-    diff_class = mapping.get(file_type)
-    if diff_class is None:
-        supported_types = " ".join(mapping.keys())
-        msg = f"unspported file type: '{file_type}'\nsupported types: {supported_types}"
-        raise exceptions.InputDirContentsError(msg)
-    return diff_class()
+def get_diff_summary(config_data: List["ConfigData"]) -> "DiffSummary":
+    """Get the diff summary between the given config data."""
+    from diffant.differ.differ import Differ
+
+    return Differ().calc(*config_data)
+
+
+def generate_report(diff_summary: "DiffSummary", report_type: ReportTypeEnum) -> None:
+    """Generate a report from the diff summary."""
+    from diffant.report.generate import generate_report
+
+    generate_report(diff_summary, report_type)
+
+
+if __name__ == "__main__":
+    app()

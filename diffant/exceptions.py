@@ -13,7 +13,11 @@ class FatalButExpectedError(Exception):
     """
 
 
-class ParseError(FatalButExpectedError):
+class ReadError(FatalButExpectedError):
+    """We failed to read the file contents."""
+
+
+class DeserializationError(FatalButExpectedError):
     """We failed to parse the json/ini whatever file.
 
     Args:

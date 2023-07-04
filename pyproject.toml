@@ -22,6 +22,9 @@ pyyaml = "6.0"
 types-pyyaml = "6.0.12.10"
 xmltodict = "0.13.0"
 types-xmltodict = "0.13.0.2"
+typer = "^0.9.0"
+cloudpathlib = "^0.15.0"
+more-itertools = "^9.1.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "23.3.0"
@@ -37,23 +40,10 @@ sourcery-cli = "^1.2.0"
 tox = "4.6.0"
 
 [tool.poetry.scripts]
-diffant = "diffant.main:main"
+diffant = "diffant.main:app"
 
 [tool.isort]
 profile = "black"
-
-[tool.pylint.main]
-#    "ip"  : because it is as easy as ip_address or ip_num and briefer
-#    "fh"  : because it is a well known variable meaning 'file handle'
-good-names= [
-           "fh",
-           "i",
-           "ip",
-           "j",
-           "k",
-           "Run",
-           "v",
-]
 
 [build-system]
 requires = ["poetry-core"]
